@@ -1,0 +1,6 @@
+{
+  "name": "Habit Tracker",
+  "description": "A professional, minimalist, and offline-first habit tracking application featuring streaks, weekly logs, visual reflection grids, and active focus timers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

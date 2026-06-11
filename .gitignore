@@ -1,0 +1,26 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# FastAPI / tools
+.idea/
+.vscode/
+
+# logs
+*.log
