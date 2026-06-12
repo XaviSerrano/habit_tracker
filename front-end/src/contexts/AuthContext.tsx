@@ -25,9 +25,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedToken = localStorage.getItem('auth_token');
+    const savedUser = localStorage.getItem('auth_user');
+
     if (savedToken) {
       setToken(savedToken);
-      // TODO: Verify token is still valid
+    }
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error('Failed to parse saved user:', error);
+        localStorage.removeItem('auth_user');
+      }
     }
     setIsLoading(false);
   }, []);
