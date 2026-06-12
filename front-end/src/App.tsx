@@ -73,7 +73,13 @@ export default function App() {
         if (habitsRes.ok && logsRes.ok) {
           const habitsData = await habitsRes.json();
           const logsData = await logsRes.json();
-          setHabits(habitsData);
+
+          const mappedHabits = habitsData.map((h: any) => ({
+            ...h,
+            specificDays: h.specificDays || h.specific_days || [0, 1, 2, 3, 4, 5, 6]
+          }));
+
+          setHabits(mappedHabits);
           setLogs(logsData);
         }
       } catch (error) {
@@ -185,7 +191,7 @@ export default function App() {
           description: newHabit.description,
           category: newHabit.category,
           frequency: newHabit.frequency,
-          specificDays: newHabit.specific_days,
+          specificDays: newHabit.specific_days || [0, 1, 2, 3, 4, 5, 6],
           target: newHabit.target,
           targetUnit: newHabit.target_unit,
           createdAt: newHabit.created_at,

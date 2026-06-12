@@ -42,7 +42,7 @@ export default function WeeklyCalGrid({
 
       // Check frequency alignment
       if (h.frequency === 'daily') return true;
-      return h.specificDays.includes(dayOfWeek);
+      return h.specificDays?.includes(dayOfWeek) ?? false;
     });
 
     if (activeHabits.length === 0) return { completed: 0, total: 0, percent: 0 };
