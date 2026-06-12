@@ -75,8 +75,17 @@ export default function App() {
           const logsData = await logsRes.json();
 
           const mappedHabits = habitsData.map((h: any) => ({
-            ...h,
-            specificDays: h.specificDays || h.specific_days || [0, 1, 2, 3, 4, 5, 6]
+            id: h.id,
+            name: h.name || '',
+            description: h.description || '',
+            category: h.category || 'focus',
+            frequency: h.frequency || 'daily',
+            specificDays: h.specificDays || h.specific_days || [0, 1, 2, 3, 4, 5, 6],
+            target: h.target || 1,
+            targetUnit: h.targetUnit || h.target_unit || 'times',
+            createdAt: h.createdAt || h.created_at || new Date().toISOString(),
+            archived: h.archived || false,
+            color: h.color || '#0d9488'
           }));
 
           setHabits(mappedHabits);
@@ -187,16 +196,16 @@ export default function App() {
         const newHabit = await response.json();
         setHabits(prev => [{
           id: newHabit.id,
-          name: newHabit.name,
-          description: newHabit.description,
-          category: newHabit.category,
-          frequency: newHabit.frequency,
+          name: newHabit.name || '',
+          description: newHabit.description || '',
+          category: newHabit.category || 'focus',
+          frequency: newHabit.frequency || 'daily',
           specificDays: newHabit.specific_days || [0, 1, 2, 3, 4, 5, 6],
-          target: newHabit.target,
-          targetUnit: newHabit.target_unit,
-          createdAt: newHabit.created_at,
-          archived: newHabit.archived,
-          color: newHabit.color
+          target: newHabit.target || 1,
+          targetUnit: newHabit.target_unit || 'times',
+          createdAt: newHabit.created_at || new Date().toISOString(),
+          archived: newHabit.archived || false,
+          color: newHabit.color || '#0d9488'
         }, ...prev]);
         setIsCreateOpen(false);
       }

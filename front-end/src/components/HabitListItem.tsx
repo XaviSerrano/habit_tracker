@@ -160,7 +160,7 @@ export default function HabitListItem({
   };
 
   // Verify if it is a time-based timed habit
-  const isTimeBased = habit.targetUnit.toLowerCase().includes('min') || habit.targetUnit.toLowerCase().includes('sec');
+  const isTimeBased = (habit.targetUnit || '').toLowerCase().includes('min') || (habit.targetUnit || '').toLowerCase().includes('sec');
 
   const categoryLabels: Record<string, string> = {
     health: 'Health',
