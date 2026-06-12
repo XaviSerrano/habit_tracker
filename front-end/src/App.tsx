@@ -19,18 +19,14 @@ import HabitStats from './components/HabitStats';
 import HabitListItem from './components/HabitListItem';
 import CreateHabitModal from './components/CreateHabitModal';
 import ActiveFocusBreather from './components/ActiveFocusBreather';
+import AdvancedMenu from './components/AdvancedMenu';
 
 import {
   Plus,
   Search,
-  Download,
-  Trash2,
   Sparkles,
-  RotateCcw,
   SlidersHorizontal,
   Archive,
-  Menu,
-  X,
   Target,
   BrainCircuit
 } from 'lucide-react';
@@ -50,6 +46,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<HabitCategory | 'all'>('all');
   const [showArchived, setShowArchived] = useState(false);
+  const [showAdvancedMenu, setShowAdvancedMenu] = useState(false);
 
   // Computed week dates
   const currentWeek = getWeekDates(weekPivot);
@@ -352,28 +349,20 @@ export default function App() {
               Anchor Habit
             </button>
 
-            <button
-              onClick={handleExportData}
-              className="p-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-600 hover:text-zinc-900 rounded-lg transition cursor-pointer shadow-xs"
-              title="Backup / Export Data as JSON"
-            >
-              <Download className="w-4.5 h-4.5" />
-            </button>
+            <AdvancedMenu
+              showMenu={showAdvancedMenu}
+              onToggle={() => setShowAdvancedMenu(!showAdvancedMenu)}
+              onClose={() => setShowAdvancedMenu(false)}
+              onExport={handleExportData}
+              onWipe={handleWipeData}
+            />
 
             <button
               onClick={logout}
-              className="p-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-400 hover:text-zinc-600 rounded-lg transition cursor-pointer shadow-xs"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-400 hover:text-zinc-600 rounded-lg transition cursor-pointer shadow-xs text-xs font-mono font-bold"
               title="Logout"
             >
-              <X className="w-4.5 h-4.5" />
-            </button>
-
-            <button
-              onClick={handleWipeData}
-              className="p-2 bg-white hover:bg-red-50 border border-zinc-200 text-zinc-400 hover:text-red-650 rounded-lg transition cursor-pointer shadow-xs"
-              title="Wipe Data"
-            >
-              <RotateCcw className="w-4.5 h-4.5" />
+              Logout
             </button>
           </div>
         </header>
