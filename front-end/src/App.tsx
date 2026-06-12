@@ -296,7 +296,7 @@ export default function App() {
     // (Only if they want specific week days filtering, otherwise let's show all active habits)
     const selectedDateObj = new Date(selectedDate + 'T00:00:00');
     const dayOfWeek = selectedDateObj.getDay();
-    const scheduleMatch = h.frequency === 'daily' || h.specificDays.includes(dayOfWeek);
+    const scheduleMatch = h.frequency === 'daily' || (h.specificDays?.includes(dayOfWeek) ?? false);
 
     return searchMatch && categoryMatch && scheduleMatch;
   });
