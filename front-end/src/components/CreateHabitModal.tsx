@@ -75,8 +75,8 @@ export default function CreateHabitModal({ onClose, onCreateHabit }: CreateHabit
 
   return (
     <div className="fixed inset-0 bg-zinc-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div 
-        className="w-full max-w-lg bg-white border border-zinc-200 rounded-2xl shadow-xl p-6 relative"
+      <div
+        className="w-full max-w-lg max-h-[90vh] overflow-y-auto scrollbar-hide bg-white border border-zinc-200 rounded-2xl shadow-xl p-6 relative"
         id="create-habit-box"
       >
         

@@ -62,10 +62,10 @@ export default function App() {
       try {
         setApiLoading(true);
         const [habitsRes, logsRes] = await Promise.all([
-          fetch('http://localhost:8000/api/habits', {
+          fetch('http://localhost:8000/api/habits/', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:8000/api/logs', {
+          fetch('http://localhost:8000/api/logs/', {
             headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);
@@ -88,8 +88,17 @@ export default function App() {
             color: h.color || '#0d9488'
           }));
 
+          const mappedLogs = logsData.map((l: any) => ({
+            id: l.id,
+            habitId: l.habit_id,   // snake_case → camelCase
+            date: l.date,
+            value: l.value,
+            note: l.note,
+            timestamp: l.timestamp
+          }));
+
           setHabits(mappedHabits);
-          setLogs(logsData);
+          setLogs(mappedLogs);  // ← antes era setLogs(logsData)
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -125,44 +134,38 @@ export default function App() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/logs', {
+      const response = await fetch('http://localhost:8000/api/logs/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          habit_id: habitId,
-          date: logDate,
-          value,
-          note
-        })
+        body: JSON.stringify({ habit_id: habitId, date: logDate, value, note })
       });
+
+      if (response.status === 204) {
+        setLogs(prev => prev.filter(l => !(l.habitId === habitId && l.date === logDate)));
+        return;
+      }
 
       if (response.ok) {
         const newLog = await response.json();
         setLogs(prevLogs => {
           const idx = prevLogs.findIndex(l => l.habitId === habitId && l.date === logDate);
-          if (idx >= 0) {
-            const updated = [...prevLogs];
-            updated[idx] = {
-              id: newLog.id,
-              habitId: newLog.habit_id,
-              date: newLog.date,
-              value: newLog.value,
-              note: newLog.note,
-              timestamp: newLog.timestamp
-            };
-            return updated;
-          }
-          return [...prevLogs, {
+          const mapped = {
             id: newLog.id,
             habitId: newLog.habit_id,
             date: newLog.date,
             value: newLog.value,
             note: newLog.note,
             timestamp: newLog.timestamp
-          }];
+          };
+          if (idx >= 0) {
+            const updated = [...prevLogs];
+            updated[idx] = mapped;
+            return updated;
+          }
+          return [...prevLogs, mapped];
         });
       }
     } catch (error) {
@@ -174,7 +177,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/habits', {
+      const response = await fetch('http://localhost:8000/api/habits/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -382,11 +385,6 @@ export default function App() {
           </div>
         </header>
 
-        {/* Dynamic Metric dashboard */}
-        <section className="mb-8" id="stats-dashboard-grid">
-          <HabitStats habits={habits} logs={logs} />
-        </section>
-
         {/* Central Layout Columns */}
         <main className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mt-5" id="main-content-flow">
           
@@ -539,49 +537,51 @@ export default function App() {
           {/* Right Column (Sidebar Tools - One Third Width) */}
           <div className="space-y-6" id="sidebar-tools-stack">
             
-            {/* 1. Tactical Breathing biohacking module */}
-            <ActiveFocusBreather />
-
-            {/* 2. Systemic Coaching Advice details */}
-            <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm" id="behavioral-laws-panel">
-              <h3 className="text-xs font-bold tracking-wider text-zinc-500 uppercase font-mono mb-3">
-                Behavioral Protocols
-              </h3>
-              
-              <ul className="space-y-3.5 text-xs text-zinc-500" id="coaching-laws">
-                <li className="flex gap-2.5 items-start">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-1.5 shrink-0" />
-                  <div>
-                    <span className="font-bold text-zinc-800">Law 1: Atomic Compounding</span>
-                    <p className="mt-0.5 leading-relaxed text-zinc-400 font-sans">
-                      Streaks represent progressive neuro-association. Completing a tiny 1% daily action compounding over 365 days yields a 37x performance gain.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex gap-2.5 items-start">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-1.5 shrink-0" />
-                  <div>
-                    <span className="font-bold text-zinc-800">Law 2: Temporal Friction</span>
-                    <p className="mt-0.5 leading-relaxed text-zinc-400 font-sans">
-                      Start timed sessions immediately with the countdown utility. Getting over the initial 4-minute initiation friction is 90% of the cognitive battle.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex gap-2.5 items-start">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-1.5 shrink-0" />
-                  <div>
-                    <span className="font-bold text-zinc-800">Law 3: Calibrated Execution</span>
-                    <p className="mt-0.5 leading-relaxed text-zinc-400 font-sans">
-                      Before jumping into high-importance habits, complete 3 Box Breathing cycles. It triggers vagal tone activation and slows heartbeat.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+            <HabitStats habits={habits} logs={logs} />
 
           </div>
 
         </main>
+
+        {/* Physoliogical */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <ActiveFocusBreather />
+          
+          <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm" id="behavioral-laws-panel">
+            <h3 className="text-xs font-bold tracking-wider text-zinc-500 uppercase font-mono mb-3">
+              Behavioral Protocols
+            </h3>
+            <ul className="space-y-3.5 text-xs text-zinc-500" id="coaching-laws">
+              <li className="flex gap-2.5 items-start">
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-1.5 shrink-0" />
+                <div>
+                  <span className="font-bold text-zinc-800">Law 1: Atomic Compounding</span>
+                  <p className="mt-0.5 leading-relaxed text-zinc-400 font-sans">
+                    Streaks represent progressive neuro-association. Completing a tiny 1% daily action compounding over 365 days yields a 37x performance gain.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-2.5 items-start">
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-1.5 shrink-0" />
+                <div>
+                  <span className="font-bold text-zinc-800">Law 2: Temporal Friction</span>
+                  <p className="mt-0.5 leading-relaxed text-zinc-400 font-sans">
+                    Start timed sessions immediately with the countdown utility. Getting over the initial 4-minute initiation friction is 90% of the cognitive battle.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-2.5 items-start">
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-1.5 shrink-0" />
+                <div>
+                  <span className="font-bold text-zinc-800">Law 3: Calibrated Execution</span>
+                  <p className="mt-0.5 leading-relaxed text-zinc-400 font-sans">
+                    Before jumping into high-importance habits, complete 3 Box Breathing cycles. It triggers vagal tone activation and slows heartbeat.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
 
         {/* Footer */}
         <footer className="mt-16 pt-6 border-t border-zinc-200 text-center text-[10px] text-zinc-400 font-mono tracking-wider flex flex-col sm:flex-row justify-between items-center gap-3">

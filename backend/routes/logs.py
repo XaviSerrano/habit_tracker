@@ -42,8 +42,9 @@ def get_logs(
 def create_log(log_data: HabitLogCreate, user_id: str = Depends(get_current_user_id), db: Session = Depends(get_db)):
     log = log_service.create_or_update_log(db, user_id, log_data)
 
-    if not log:
-        raise HTTPException(status_code=404, detail="Habit not found or log could not be created")
+    if log is None:
+        from fastapi.responses import Response
+        return Response(status_code=204)
 
     return log
 

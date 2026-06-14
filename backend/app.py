@@ -9,7 +9,7 @@ load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Habit Tracker API", version="1.0.0")
+app = FastAPI(title="Habit Tracker API", version="1.0.0", redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
