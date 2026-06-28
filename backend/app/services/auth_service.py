@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from models import User
-from schemas import UserCreate
-from utils.jwt_utils import hash_password, verify_password
+from ..models import User
+from ..schemas import UserCreate
+from ..utils.jwt_utils import hash_password, verify_password
 
 
 def create_user(db: Session, user_data: UserCreate) -> User:

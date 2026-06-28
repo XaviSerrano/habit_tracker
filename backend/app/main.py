@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import Base, engine
+from .database import Base, engine
 import os
 from dotenv import load_dotenv
-import models
+from . import models
 
 load_dotenv()
 
@@ -26,7 +26,7 @@ def health_check():
 
 
 # Routes
-from routes import auth, habits, logs, stats
+from .routes import auth, habits, logs, stats
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(habits.router, prefix="/api/habits", tags=["habits"])

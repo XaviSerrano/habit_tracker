@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import HabitLog, Habit
-from schemas import HabitLogCreate
+from ..models import HabitLog, Habit
+from ..schemas import HabitLogCreate
 from datetime import datetime
 
 
@@ -14,13 +14,11 @@ def create_or_update_log(db: Session, user_id: str, log_data: HabitLogCreate) ->
     if not habit:
         return None
 
-    # Check if log already exists
     existing_log = db.query(HabitLog).filter(
         HabitLog.habit_id == log_data.habit_id,
         HabitLog.date == log_data.date
     ).first()
 
-    # If value=0 and no note, delete if exists
     if log_data.value == 0 and not log_data.note:
         if existing_log:
             db.delete(existing_log)

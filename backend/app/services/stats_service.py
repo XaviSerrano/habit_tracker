@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Habit, HabitLog
+from ..models import Habit, HabitLog
 from datetime import datetime, timedelta
 from typing import List
 import json
@@ -22,7 +22,6 @@ def calculate_streaks(db: Session, user_id: str, habit_id: str) -> dict:
     if not logs:
         return {"current_streak": 0, "longest_streak": 0}
 
-    # Calculate longest streak
     longest_streak = 1
     current_longest = 1
 
@@ -38,7 +37,6 @@ def calculate_streaks(db: Session, user_id: str, habit_id: str) -> dict:
         else:
             current_longest = 1
 
-    # Calculate current streak
     today = datetime.utcnow().date()
     yesterday = today - timedelta(days=1)
 
@@ -56,7 +54,6 @@ def calculate_streaks(db: Session, user_id: str, habit_id: str) -> dict:
             current_streak += 1
             check_date -= timedelta(days=1)
         elif check_date == today or check_date == yesterday:
-            # Allow starting from yesterday if today is incomplete
             check_date -= timedelta(days=1)
         else:
             break
@@ -96,20 +93,17 @@ def get_daily_progress(db: Session, user_id: str, date: str) -> dict:
 
     check_date = datetime.strptime(date, "%Y-%m-%d").date()
     day_of_week = check_date.weekday()  # 0=Monday, 6=Sunday
-    # Convert to Sunday=0 format
-    day_of_week = (day_of_week + 1) % 7
+    day_of_week = (day_of_week + 1) % 7  # Convert to Sunday=0 format
 
     completed = 0
     total = 0
 
     for habit in habits:
-        # Check if habit was created before/on this date
         habit_created = datetime.strptime(habit.created_at, "%Y-%m-%dT%H:%M:%S.%f")
         if habit_created.date() > check_date:
             continue
 
-        # Check if habit is scheduled on this day
-        from services.habit_service import is_habit_active_on_day
+        from .habit_service import is_habit_active_on_day
         if not is_habit_active_on_day(habit, day_of_week):
             continue
 

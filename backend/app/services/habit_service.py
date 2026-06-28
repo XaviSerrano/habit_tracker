@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import Habit
-from schemas import HabitCreate, HabitUpdate
+from ..models import Habit
+from ..schemas import HabitCreate, HabitUpdate
 import json
 from datetime import datetime
 
