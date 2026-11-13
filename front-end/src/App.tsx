@@ -62,10 +62,10 @@ export default function App() {
       try {
         setApiLoading(true);
         const [habitsRes, logsRes] = await Promise.all([
-          fetch('http://localhost:8000/api/habits/', {
+          fetch('/api/habits/', {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:8000/api/logs/', {
+          fetch('/api/logs/', {
             headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);
@@ -134,7 +134,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/logs/', {
+      const response = await fetch('/api/logs/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -177,7 +177,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/habits/', {
+      const response = await fetch('/api/habits/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -221,7 +221,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/habits/${id}/archive?archive=${archive}`, {
+      const response = await fetch(`/api/habits/${id}/archive?archive=${archive}`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -240,7 +240,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/habits/${id}`, {
+      const response = await fetch(`/api/habits/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -281,7 +281,7 @@ export default function App() {
         // Delete all habits (cascade deletes logs)
         await Promise.all(
           habits.map(h =>
-            fetch(`http://localhost:8000/api/habits/${h.id}`, {
+            fetch(`/api/habits/${h.id}`, {
               method: 'DELETE',
               headers: { 'Authorization': `Bearer ${token}` }
             })

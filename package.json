@@ -1,0 +1,10 @@
+{
+  "name": "habit-tracker",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --kill-others -n backend,frontend \"uv run --directory backend --no-project --python 3.12 --with-requirements requirements.txt uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload\" \"npm --prefix front-end run dev -- --host 127.0.0.1 --strictPort\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

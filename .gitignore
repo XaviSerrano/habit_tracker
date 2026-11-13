@@ -12,6 +12,8 @@ __pycache__/
 
 # Virtual env
 venv/
+.venv/
+.vercel/
 .env
 
 # Database

@@ -2,10 +2,21 @@ import jwt
 from datetime import datetime, timedelta
 from typing import Optional
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_HOURS = int(os.getenv("ACCESS_TOKEN_EXPIRE_HOURS", 24))
+
+if os.getenv("VERCEL_ENV") in ("preview", "production") and (
+    not SECRET_KEY or SECRET_KEY in (
+        "your-super-secret-key",
+        "your-super-secret-key-change-this-in-production",
+    )
+):
+    raise RuntimeError("SECRET_KEY must be configured on Vercel")
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

@@ -1,8 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./habit_tracker.db")
+
+if os.getenv("VERCEL_ENV") in ("preview", "production") and (
+    not os.getenv("DATABASE_URL") or DATABASE_URL.startswith("sqlite")
+):
+    raise RuntimeError("DATABASE_URL must point to a persistent database on Vercel")
 
 engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
